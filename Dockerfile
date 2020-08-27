@@ -3,7 +3,8 @@ WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 COPY client/package.json client/yarn.lock ./client/
 COPY server/package.json server/yarn.lock ./server/
-RUN yarn --pure-lockfile
+RUN yarn config set "strict-ssl" false
+RUN yarn --pure-lockfile && yarn --cwd client --pure-lockfile && yarn --cwd server --pure-lockfile
 COPY . .
 RUN yarn build
 
@@ -13,6 +14,7 @@ WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 COPY client/package.json client/yarn.lock ./client/
 COPY server/package.json server/yarn.lock ./server/
+RUN yarn config set "strict-ssl" false
 RUN yarn --pure-lockfile && yarn --cwd client --pure-lockfile && yarn --cwd server --pure-lockfile
 COPY --from=base /usr/src/app/client/build ./client/build
 COPY --from=base /usr/src/app/server/build ./server/build
